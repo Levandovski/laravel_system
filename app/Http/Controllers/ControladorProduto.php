@@ -8,23 +8,20 @@ use App\Produto;
 use App\Categoria;
 class ControladorProduto extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+     public function indexView()
+    {
+     
+        return view('/produtos');
+       
+    }    
+    
     public function index()
     {
-        
+     
         $prods=Produto::all();
-        foreach($prods as $prod){
-            
-            $cat=Categoria::find($prod->categoria_id);
-            $produtos[]=array("id" => $prod->id, "nome" => $prod->nome, "estoque" => $prod->estoque, "preco" => $prod->preco, "categoria" => $cat->nome);
-            
-        }
-        
-        return view('produtos', compact('produtos'));
+        return $prods->toJson();
+       
     }
 
     /**
@@ -34,8 +31,7 @@ class ControladorProduto extends Controller
      */
     public function create()
     {
-       $cats=Categoria::all();
-       return view('novoproduto',compact('cats'));
+       return view('novoproduto');
     }
 
     /**
@@ -46,13 +42,13 @@ class ControladorProduto extends Controller
      */
     public function store(Request $request)
     {
-        $prod= new Produto();
-        $prod->nome= $request->input('nomeProduto');
-        $prod->estoque= $request->input('estoqueProduto');
-        $prod->preco= $request->input('precoProduto');
-        $prod->categoria_id= $request->input('categoria_id');
-        $prod->save();
-        return redirect('/produtos');
+      $prod=new Produto();
+      $prod->nome=$request->input('nome');
+      $prod->preco=$request->input('preco');
+      $prod->estoque=$request->input('estoque');
+      $prod->categoria_id=$request->input('categoria_id');
+      $prod->save();
+      return json_encode($prod);
     }
 
     /**
@@ -63,7 +59,13 @@ class ControladorProduto extends Controller
      */
     public function show($id)
     {
-        //
+        $prod= Produto::find($id);
+        if(isset($prod)){
+            
+            return json_encode($prod);
+        }
+        return response('Produto não encontrado', 404);
+    
     }
 
     /**
@@ -74,17 +76,8 @@ class ControladorProduto extends Controller
      */
     public function edit($id)
     {
-        
-        
-        $prod= Produto::find($id);
-        $cats= Categoria::all();
-        if(isset($prod)){
-            $cat=Categoria::find($prod->categoria_id);
-            $produtos=array("id" => $prod->id, "nome" => $prod->nome, "estoque" => $prod->estoque, "preco" => $prod->preco, "categoria" => $cat->nome, "categoria_id" => $cat->id);
-            return view('editarproduto',compact('produtos', 'cats'));   
-        }else{
-            return redirect('/produtos');    
-        }
+      
+      
         
         
     }
@@ -100,16 +93,18 @@ class ControladorProduto extends Controller
      */
     public function update(Request $request, $id)
     {
-        $prod= Produto::find($id);
+      $prod= Produto::find($id);
         if(isset($prod)){
-        $prod->nome=$request->input('nomeProduto');
-        $prod->estoque=$request->input('estoqueProduto');
-        $prod->preco=$request->input('precoProduto');
-        $prod->categoria_id=$request->input('categoria_id');
-        $prod->save();
+            $prod->nome=$request->input('nome');
+            $prod->preco=$request->input('preco');
+            $prod->estoque=$request->input('estoque');
+            $prod->categoria_id=$request->input('categoria_id');
+            $prod->save();
+            return json_encode($prod);
         }
-        return redirect('/produtos');
+        return response('Produto não encontrado', 404);
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -119,10 +114,11 @@ class ControladorProduto extends Controller
      */
     public function destroy($id)
     {
-        $prod= Produto::find($id);
+       $prod=Produto::find($id);
         if(isset($prod)){
             $prod->delete();
+            return response('ok',200);
         }
-        return redirect('/produtos');
+          return response('Produto não encontrado',404);
     }
 }

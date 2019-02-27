@@ -8,9 +8,9 @@
         <table class="table table-ordered table-hover">
           <thead>
               <tr>
-                  <td>Código</td>
-                  <td>Nome</td>
-                  <td>Ações</td>
+                  <th>Código</th>
+                  <th>Nome</th>
+                  <th>Ações</th>
               </tr>
           </thead>
             <tbody>

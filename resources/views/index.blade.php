@@ -24,7 +24,7 @@
                    <p class="card-text">
                    Cadastre as categorias dos seus produtos
                    </p>
-                   <a href="/produtos" class="btn btn-primary">
+                   <a href="/categorias" class="btn btn-primary">
                    Cadastre suas categorias
                    </a>                 
                </div>
